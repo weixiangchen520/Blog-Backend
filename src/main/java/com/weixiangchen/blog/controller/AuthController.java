@@ -1,7 +1,11 @@
 package com.weixiangchen.blog.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.weixiangchen.blog.domain.User;
 import com.weixiangchen.blog.mapper.UserMapper;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,15 +20,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     // @Autowired和@Resources
     private final UserMapper userMapper;
+    private final RedisTemplate redisTemplate;
 
-    public AuthController(UserMapper userMapper) {
+    public AuthController(UserMapper userMapper, RedisTemplate redisTemplate) {
         this.userMapper = userMapper;
+        this.redisTemplate = redisTemplate;
     }
 
     @PostMapping("/login")
     public String login(@RequestBody User user) {
         User currentUser = userMapper.findUserByEmailAndPassword(user);
         if (currentUser != null) {
+            ValueOperations ops = redisTemplate.opsForValue();
+            System.out.println(currentUser.getId());
+            System.out.println(JSON.toJSONString(currentUser));
+            System.out.println(ops.get(currentUser.getId().toString()));
+            ops.set(currentUser.getId().toString(), JSON.toJSONString(currentUser));
             return "success";
         } else {
             return "fail";

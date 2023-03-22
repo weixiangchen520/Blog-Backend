@@ -30,7 +30,6 @@ public class UserController {
     @PostMapping("/create")
     public Long create(@RequestBody User user) {
         userMapper.createUser(user);
-        System.out.println(user.getId());
         return user.getId();
     }
 }
