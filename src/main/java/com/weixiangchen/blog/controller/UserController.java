@@ -1,6 +1,9 @@
 package com.weixiangchen.blog.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.weixiangchen.blog.mapper.UserMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +20,15 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public User info(@Param("id") Long id) {
+    public User info(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        System.out.println(session.getAttribute("info"));
+        User currentUser = (User)session.getAttribute("info");
+        return currentUser;
+    }
+
+    @GetMapping("/getInfoById")
+    public User getUserInfoById( @Param("id") Long id) {
         return userMapper.findUserById(id);
     }
 

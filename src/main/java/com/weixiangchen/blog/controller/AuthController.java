@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.weixiangchen.blog.domain.User;
 import com.weixiangchen.blog.mapper.UserMapper;
+//import org.springframework.data.redis.core.RedisTemplate;
+//import org.springframework.data.redis.core.ValueOperations;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +31,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    public String login(HttpServletRequest request, @RequestBody User user) {
         User currentUser = userMapper.findUserByEmailAndPassword(user);
         if (currentUser != null) {
-            ValueOperations ops = redisTemplate.opsForValue();
-            System.out.println(currentUser.getId());
-            System.out.println(JSON.toJSONString(currentUser));
-            System.out.println(ops.get(currentUser.getId().toString()));
-            ops.set(currentUser.getId().toString(), JSON.toJSONString(currentUser));
+//            ValueOperations ops = redisTemplate.opsForValue();
+//            System.out.println(currentUser.getId());
+//            System.out.println(JSON.toJSONString(currentUser));
+//            System.out.println(ops.get(currentUser.getId().toString()));
+//            ops.set(currentUser.getId().toString(), JSON.toJSONString(currentUser));
+            HttpSession session = request.getSession();
+            System.out.println(currentUser);
+            session.setAttribute("info", currentUser);
             return "success";
         } else {
             return "fail";
