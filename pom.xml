@@ -77,6 +77,11 @@
             <artifactId>fastjson</artifactId>
             <version>2.0.25</version>
         </dependency>
+        <!--邮件发送所需依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
